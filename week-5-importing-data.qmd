@@ -1,6 +1,6 @@
 ---
 title: "Import Data"
-format: gfm
+format: html
 embed-resources: true
 execute: 
   echo: true
