@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Import Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="week-5-importing-data_files/libs/clipboard/clipboard.min.js"></script>
+<script src="week-5-importing-data_files/libs/quarto-html/quarto.js"></script>
+<script src="week-5-importing-data_files/libs/quarto-html/popper.min.js"></script>
+<script src="week-5-importing-data_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="week-5-importing-data_files/libs/quarto-html/anchor.min.js"></script>
+<link href="week-5-importing-data_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="week-5-importing-data_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="week-5-importing-data_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="week-5-importing-data_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="week-5-importing-data_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Import Data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Importing data may seem simple, but if the data is messy it can create problems in the analysis side of things. We are going to observe efficient methods to import data stored in a flat file format. <strong>Flat file formats</strong> are one of the most common formats for saving data because flat files can be read by a large variety of data related software. Flat file formats include Comma Separated Values (csv’s), tab delimited files, fixed width files and more.</p>
+<section id="readr" class="level2">
+<h2 class="anchored" data-anchor-id="readr">readr</h2>
+<p>The <strong><code>readr</code></strong> R package contains simple, consistent functions for importing data saved as flat file documents. <code>readr</code> functions offer an alternative to <code>base</code> R functions that read in flat files. Compared to base R’s <code>read.table()</code> or <code>read.csv()</code> and its derivatives, <code>readr</code> functions have several advantages. <code>readr</code> functions:</p>
+<ul>
+<li>are ~10 times faster<br>
+</li>
+<li>return user-friendly tibbles<br>
+</li>
+<li>have more intuitive defaults<br>
+</li>
+<li>easily handle messy or missing data</li>
+</ul>
+<p><code>readr</code> supplies several related functions, each designed to read in a specific flat file format.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Reads</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>read_csv()</code></td>
+<td>Comma separated values</td>
+</tr>
+<tr class="even">
+<td><code>read_csv2()</code></td>
+<td>Semi-colon separate values</td>
+</tr>
+<tr class="odd">
+<td><code>read_delim()</code></td>
+<td>General delimited files</td>
+</tr>
+<tr class="even">
+<td><code>read_fwf()</code></td>
+<td>Fixed width files</td>
+</tr>
+<tr class="odd">
+<td><code>read_log()</code></td>
+<td>Apache log files</td>
+</tr>
+<tr class="even">
+<td><code>read_table()</code></td>
+<td>Space separated files</td>
+</tr>
+<tr class="odd">
+<td><code>read_tsv()</code></td>
+<td>Tab delimited values</td>
+</tr>
+</tbody>
+</table>
+<p>Here, we will focus on the <code>read_csv()</code> function, but the other functions work in a similar way. In most cases, you can use the syntax and arguments of <code>read_csv()</code> when using the other functions listed above.</p>
+<p><code>readr</code> is a core member of the tidyverse. It is loaded everytime you call <code>library(tidyverse)</code>.</p>
+</section>
+<section id="sample-data" class="level2">
+<h2 class="anchored" data-anchor-id="sample-data">Sample data</h2>
+<p>A sample data set to import is saved alongside this notebook. The data set, saved as <code>nimbus.csv</code>, contains atmospheric ozone measurements of the southern hemisphere collected by NASA’s NIMBUS-7 satellite in October 1985. The data set is of historical interest because it displays evidence of the hole in the ozone layer collected shortly after the hole was first reported.</p>
+</section>
+<section id="importing-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-data">Importing Data</h2>
+<p>To import <code>nimbus.csv</code>, use the readr functions that reads <code>.csv</code> files, <code>read_csv()</code>. Set the first argument of <code>read_csv()</code> to a character string: the file path from your <em>working directory</em> to the <code>nimbus.csv</code> file.</p>
+</section>
+<section id="your-turn-1" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-1">Your Turn 1</h2>
+<p>Save <code>nimbus.csv</code> into your project folder on your computer. Then read it into an object. Then view the results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nimbus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"nimbus.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 18963 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (1): ozone
+dbl  (2): longitude, latitude
+dttm (1): date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<p>Notice that the code above saves the output to an object named nimbus. You must save the output of <code>read_csv()</code> to an object if you wish to use it later. If you do not save the output, <code>read_csv()</code> will merely print the contents of the data set at the command line.</p>
+</section>
+<section id="tibbles" class="level2">
+<h2 class="anchored" data-anchor-id="tibbles">Tibbles</h2>
+<p><code>read_csv()</code> reads the data into a <strong>tibble</strong>, which is a special class of data frame. Since a tibble is a sub-class of data frame, R will in most cases treat tibbles in exactly the same way that R treats data frames.</p>
+<p>There is however, one notable exception. When R prints a data frame in the console window, R attempts to display the entire contents of the data frame. This has a negative effect: unless the data frame is very small you are left viewing the end of the data frame (or if the data frame is very large, the middle of the data frame since R stops displaying new rows after a maximum number is reached).</p>
+<p>R will display tibbles in a much more sensible way. If the <strong>tibble</strong> package is loaded, R will display the first ten rows of the tibble and as many columns as will fit in your console window. This display ensures that the name of each column is visible in the display.</p>
+<p><code>tibble</code> is a core member of the tidyverse. It is loaded every time you call <code>library(tidyverse)</code>. The tibble package includes the functions <code>tibble()</code> and <code>tribble()</code> for making tibbles from scratch, as well as <code>as_tibble()</code> and <code>as.data.frame()</code> for converting back and forth between tibbles and data frames.</p>
+<p>In almost every case, you can ignore whether or not you are working with tibbles or data frames, but occasioannly a function might require one or the other (you will get an error that indicates that).</p>
+</section>
+<section id="parsing-nas" class="level2">
+<h2 class="anchored" data-anchor-id="parsing-nas">Parsing NA’s</h2>
+<p>If you examine <code>nimbus</code> closely, you will notice that the initial values in the <code>ozone</code> column are <code>.</code>. Can you guess what <code>.</code> stands for? The compilers of the nimbus data set used <code>.</code> to denote a missing value. In other words, they used <code>.</code> in the same way that R uses the <code>NA</code> value.</p>
+<p>If you’d like R to treat these <code>.</code> values as missing values (and you should) you will need to convert them to <code>NA</code>s. One way to do this is to ask <code>read_csv()</code> to parse <code>.</code> values as <code>NA</code> values when it reads in the data. To do this add the argument <code>na = "."</code> to <code>read_csv()</code>:</p>
+</section>
+<section id="your-turn-2" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-2">Your Turn 2</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nimbus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"nimbus.csv"</span>, <span class="at">na =</span> <span class="st">"."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 18963 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl  (3): longitude, latitude, ozone
+dttm (1): date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<p>You can set <code>na</code> to a single character string or a vector (e.g.&nbsp;c(NA, “.” , -99) of character strings. <code>read_csv()</code> will transform every value listed in the <code>na</code> argument to an <code>NA</code> when it reads in the data.</p>
+</section>
+<section id="parsing-data-types" class="level2">
+<h2 class="anchored" data-anchor-id="parsing-data-types">Parsing data types</h2>
+<p>If you run the code above and examine the results, you may now notice a new concern about the <code>ozone</code> column. The column has been parsed as character strings instead of numbers.</p>
+<p>When you use <code>read_csv()</code>, <code>read_csv()</code> tries to match each column of input to one of the basic data types in R. <code>read_csv(0</code> generally does a good job, but here the initial presence of the character strings <code>.</code> caused <code>read_csv()</code> to misidentify the contents of the <code>ozone</code> column. You can now correct this with R’s <code>as.numeric()</code> function, or you can read the data in again, this time instructing <code>read_csv()</code> to parse the column as numbers.</p>
+<p>To do this, add the argument <code>col_types</code> to <code>read_csv()</code> and set it equal to a list. Add a named element to the list for each column you would like to manually parse. The name of the element should match the name of the column you wish to parse. So for example, if we wish to parse the <code>ozone</code> and <code>data</code> column into a specific data type, we would begin by inserting the argument:</p>
+</section>
+<section id="your-turn-3" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-3">Your Turn 3</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nimbus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"nimbus.csv"</span>, <span class="at">na =</span> <span class="st">"."</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">col_types =</span> <span class="fu">list</span>(<span class="at">ozone =</span> <span class="fu">col_double</span>(),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">date =</span> <span class="fu">col_datetime</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To complete the code, set <code>ozone</code> equal to one of the functions below, each function instructs <code>read_csv()</code> to parse <code>ozone</code> as a specific type of data.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Type function</th>
+<th>Data Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>col_character()</code></td>
+<td>character</td>
+</tr>
+<tr class="even">
+<td><code>col_date()</code></td>
+<td>Date</td>
+</tr>
+<tr class="odd">
+<td><code>col_datetime()</code></td>
+<td>POSIXct (date-time)</td>
+</tr>
+<tr class="even">
+<td><code>col_double()</code></td>
+<td>double (numeric)</td>
+</tr>
+<tr class="odd">
+<td><code>col_factor()</code></td>
+<td>factor</td>
+</tr>
+<tr class="even">
+<td><code>col_guess()</code></td>
+<td>let readr guess (default)</td>
+</tr>
+<tr class="odd">
+<td><code>col_integer()</code></td>
+<td>integer</td>
+</tr>
+<tr class="even">
+<td><code>col_logical()</code></td>
+<td>logical</td>
+</tr>
+<tr class="odd">
+<td><code>col_number()</code></td>
+<td>numbers mixed with non-number characters</td>
+</tr>
+<tr class="even">
+<td><code>col_numeric()</code></td>
+<td>double or integer</td>
+</tr>
+<tr class="odd">
+<td><code>col_skip()</code></td>
+<td>do not read this column</td>
+</tr>
+<tr class="even">
+<td><code>col_time()</code></td>
+<td>time</td>
+</tr>
+</tbody>
+</table>
+<p>In our case, we would use the <code>col_double()</code> function to ensure that <code>ozone</code> is read a as double (that is numeric) column.</p>
+</section>
+<section id="the-hole-in-the-ozone-layer" class="level2">
+<h2 class="anchored" data-anchor-id="the-hole-in-the-ozone-layer">The hole in the ozone layer</h2>
+<p>Now that we have our data, we can use it to plot a picture of the hole in the ozone layer. Note that the “hole” in the ozone layer is the dark regions around the south pole. The actual “hole” in the data is a smaller area centered on the south pole, where the satellite did not take measurements.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install maps and mapproj</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("maps")</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("mapproj")</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(maps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'maps' was built under R version 4.3.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'maps'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    map</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mapproj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'mapproj' was built under R version 4.3.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># loads map of the world</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">map_data</span>(<span class="at">map =</span> <span class="st">"world"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>nimbus <span class="sc">|&gt;</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> longitude, </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">y =</span> latitude, </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">color =</span> ozone)) <span class="sc">+</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> world,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> long, </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> lat, </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                          <span class="at">group =</span> group)) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_map</span>(<span class="at">projection =</span> <span class="st">"ortho"</span>, </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">orientation =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_c</span>(<span class="at">option =</span> <span class="st">"magma"</span>) <span class="sc">+</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="week-5-importing-data_files/figure-html/map-ozone-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="missing-data" class="level2">
+<h2 class="anchored" data-anchor-id="missing-data">Missing Data</h2>
+<p>Knowing what data is missing is important to understanding how much we can trust our data and results! One way to do that is with the package <code>naniar</code> which gives us some easy functions to visualize our missing data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("naniar")</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'naniar' was built under R version 4.3.3</code></pre>
+</div>
+</div>
+<p>For example, let’s observe the missing information in our data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># note that this function is actually from the `visdat` package</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># but `naniar` loads that package - this is called a package dependency. </span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vis_miss</span>(nimbus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="week-5-importing-data_files/figure-html/viz-missing-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>From here we can see we are just missing a small amount of data (1%) for the <code>ozone</code> variable.</p>
+</section>
+<section id="writing-data" class="level2">
+<h2 class="anchored" data-anchor-id="writing-data">Writing data</h2>
+<p>readr also contains functions for saving data. These functions parallel the read functions and each save a data frame or tibble in a specific file format.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Writes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>write_csv()</code></td>
+<td>Comma separated values</td>
+</tr>
+<tr class="even">
+<td><code>write_excel_csv()</code></td>
+<td>CSV that you plan to open in Excel</td>
+</tr>
+<tr class="odd">
+<td><code>write_delim()</code></td>
+<td>General delimited files</td>
+</tr>
+<tr class="even">
+<td><code>write_file()</code></td>
+<td>A single string, written as is</td>
+</tr>
+<tr class="odd">
+<td><code>write_lines()</code></td>
+<td>A vector of strings, one string per line</td>
+</tr>
+<tr class="even">
+<td><code>write_tsv()</code></td>
+<td>Tab delimited values</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="your-turn-4" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-4">Your Turn 4</h2>
+<p>To use a write function, first give it the name of the data frame to save, then give it a filepath from your working directory to the location where you would like to save the file. This filepath should end in the name of the new file. So we can save the clean <code>nimbus</code> data set as a csv in our working directory with</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(nimbus, <span class="at">file =</span> <span class="st">"nimbus_clean.csv"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>clean_nimbus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"nimbus_clean.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 18963 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl  (3): longitude, latitude, ozone
+dttm (1): date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="your-turn-5" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-5">Your Turn 5</h2>
+<p>Look at the data for salaries, ages, and percent free throws/3 pointers for the Golden State Warriors in 2020-2021. Fix the following issues:</p>
+<ul>
+<li>N/A is the na value<br>
+</li>
+<li>there are dollar signs attached to the salaries<br>
+</li>
+<li>there are % symbols attached to the FG% and 3P% variables<br>
+</li>
+<li>keep only 2020-2021</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>gsw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"GSWdata.csv"</span>,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">col_types=</span> <span class="fu">list</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">'2019-20'</span> <span class="ot">=</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                  <span class="st">'FG%'</span> <span class="ot">=</span> <span class="fu">col_number</span>(),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">'3P%'</span> <span class="ot">=</span> <span class="fu">col_number</span>(),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                  <span class="st">'2020-21'</span> <span class="ot">=</span> <span class="fu">col_number</span>()</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: One or more parsing issues, call `problems()` on your data frame for details,
+e.g.:
+  dat &lt;- vroom(...)
+  problems(dat)</code></pre>
+</div>
+</div>
+</section>
+<section id="janitor-package" class="level2">
+<h2 class="anchored" data-anchor-id="janitor-package">janitor Package</h2>
+<p>The <code>janitor</code> package can help you clean up the names of your variables to make the more friendly for coding, like using <code>_</code> instead of spaces in names or converting to lower case for consistency or adding letters before numbers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("janitor")</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>gsw <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(gsw)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(gsw, <span class="at">file =</span> <span class="st">"gsw_clean.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualize-missing-data" class="level2">
+<h2 class="anchored" data-anchor-id="visualize-missing-data">Visualize Missing Data</h2>
+<p>To see what data is missing and in what combinations we can look at the following plot which variables have missingness, how much missingness, and their intersection (when multiple variables are missing values for a particular case.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_miss_upset</span>(gsw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="week-5-importing-data_files/figure-html/plot-missingness-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>In situations where there is a lot of missing data, it can be helpful to see those values plotted to know what is not being plotted in your data.</p>
+<p>Let’s use the built-in dataset <code>airquality</code>. First plot using <code>geom_point()</code>. Notice warning. Now change <code>geom_point()</code> to <code>geom_miss_point()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> airquality,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Ozone,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> Solar.R)) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_miss_point</span>() <span class="sc">+</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Month)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="week-5-importing-data_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<hr>
+</section>
+<section id="take-aways" class="level1">
+<h1>Take Aways</h1>
+<p>The readr package provides efficient functions for reading and saving common flat file data formats.</p>
+<p>Consider these packages for other types of data:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Reads</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>haven</td>
+<td>SPSS, Stata, and SAS files</td>
+</tr>
+<tr class="even">
+<td>readxl</td>
+<td>excel files (.xls, .xlsx)</td>
+</tr>
+<tr class="odd">
+<td>jsonlite</td>
+<td>json</td>
+</tr>
+<tr class="even">
+<td>xml2</td>
+<td>xml</td>
+</tr>
+<tr class="odd">
+<td>httr</td>
+<td>web API’s</td>
+</tr>
+<tr class="even">
+<td>rvest</td>
+<td>web pages (web scraping)</td>
+</tr>
+<tr class="odd">
+<td>DBI</td>
+<td>databases</td>
+</tr>
+<tr class="even">
+<td>sparklyr</td>
+<td>data loaded into spark</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
